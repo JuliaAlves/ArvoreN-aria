@@ -1,0 +1,43 @@
+# depslib dependency file v1.0
+1533825227 source:c:\users\u16182\desktop\arvorenaria\arvore.cpp
+	"include/Arvore.hpp"
+	<iostream>
+
+1533825844 c:\users\u16182\desktop\arvorenaria\include\arvore.hpp
+	"No.hpp"
+	<iostream>
+
+1533825417 c:\users\u16182\desktop\arvorenaria\include\no.hpp
+	<iostream>
+
+1533825742 source:c:\users\u16182\desktop\arvorenaria\main.cpp
+	"include/Arvore.hpp"
+	<iostream>
+
+1533825814 source:c:\users\u16182\desktop\arvorenaria\no.cpp
+	"include/No.hpp"
+	<cstdio>
+	<cstdlib>
+	<iostream>
+
+1533901439 source:z:\arvorenaria\arvore.cpp
+	"include/Arvore.hpp"
+	<iostream>
+
+1533825844 z:\arvorenaria\include\arvore.hpp
+	"No.hpp"
+	<iostream>
+
+1533825417 z:\arvorenaria\include\no.hpp
+	<iostream>
+
+1533907326 source:z:\arvorenaria\main.cpp
+	"include/Arvore.hpp"
+	<iostream>
+
+1533901567 source:z:\arvorenaria\no.cpp
+	"include/No.hpp"
+	<cstdio>
+	<cstdlib>
+	<iostream>
+
