@@ -10,10 +10,11 @@ namespace ArvoreNaria
         private:
             int n;
             No* raiz;
-            
+
         public:
             Arvore(unsigned int);
             void add(int);
+            void del(int);
             friend ostream& operator<<(ostream& os, const Arvore& dt);
     };
 };

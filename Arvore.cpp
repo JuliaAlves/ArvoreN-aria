@@ -13,6 +13,10 @@ namespace ArvoreNaria{
         this-> raiz->addInfo(n);
     }
 
+    void Arvore::del(int n){
+        this-> raiz->deleteInfo(n);
+    }
+
     ostream& operator<<(ostream& os, const Arvore& arv){
         os << *(arv.raiz);
         return os;
