@@ -11,7 +11,7 @@ namespace ArvoreNaria
         this->n = n;
         this->galhos = 0;
         this->qtdInf = 0;
-        this->vetInfo = new int*[n-1];
+        this->vetInfo = new Tipo*[n-1];
         this->vetPtr = new No*[n];
         for(int i=0; i < n ; i++)
             this->vetPtr[i] = 0;
@@ -21,23 +21,23 @@ namespace ArvoreNaria
         return n-1 <= this->qtdInf;
     };
 
-    void No::addInfo(int n) throw(char*){
+    void No::addInfo(Tipo* n) throw(char*){
         int i;
         for(i = 0; i < (this->qtdInf-1); i++)
-            if(*(this->vetInfo[i]) > n)
+            if(this->vetInfo[i]->compareTo(*n) >= 1)
                 break;
 
-        if (this->qtdInf > 0 && *(this->vetInfo[i]) == n)
+        if (this->qtdInf > 0 && this->vetInfo[i]->compareTo(*n) == 0)
             throw("Informação já existe");
 
-        if(i == this->qtdInf-1 && *(this->vetInfo[qtdInf-1]) < n)
+        if(i == this->qtdInf-1 && this->vetInfo[qtdInf-1]->compareTo(*n) <= -1)
             i++;
 
         if (!this->isFull()) {
             for(int j = (this->qtdInf-1); j >= i; j--)
                 this->vetInfo[j+1] = this->vetInfo[j];
 
-            this->vetInfo[i] = new int(n);
+            this->vetInfo[i] = new Tipo(*n);
             this->qtdInf++;
         }
         else
@@ -53,26 +53,29 @@ namespace ArvoreNaria
 
     }
 
-    int No::findMaior() const{
-        return *(this->vetInfo[this->qtdInf-1]);
+    Tipo* No::findMaior() const{
+        return this->vetInfo[this->qtdInf-1];
     }
 
-    int No::findMenor() const{
-        return *(this->vetInfo[0]);
+    Tipo* No::findMenor() const{
+        return this->vetInfo[0];
     }
 
-    void No::deleteInfo(int n) throw(char*){
+    void No::deleteInfo(Tipo* n) throw(char*){
         int i;
         for(i = 0; i < this->qtdInf; i++)
-            if(*(this->vetInfo[i]) >= n)
+            if(this->vetInfo[i]->compareTo(*n) >= 1 || this->vetInfo[i]->compareTo(*n) == 0)
                 break;
 
-        if (i == this->qtdInf){
+        if (n->compareTo(*this->vetInfo[i]) < 0){
             this->vetPtr[i]->deleteInfo(n);
+            return;
+        } else if (n->compareTo(*this->vetInfo[i]) > 0){
+            this->vetPtr[i + 1]->deleteInfo(n);
             return;
         }
 
-        if(*(this->vetInfo[i]) > n){
+        if(this->vetInfo[i]->compareTo(*n) > 1){
             this->vetPtr[i]->deleteInfo(n);
             if(this->vetPtr[i]->qtdInf == 0)
                 this->vetPtr[i] = 0;
@@ -86,51 +89,69 @@ namespace ArvoreNaria
             this->vetInfo[this->qtdInf] = 0;
             this->qtdInf--;
         }
-        else{
-            if(this->vetPtr[i] != 0){
-                int maior = this->vetPtr[i]->findMaior();
-                this->vetPtr[i]->deleteInfo(maior);
-                if(this->vetPtr[i]->qtdInf == 0){
-                    this->vetPtr[i] = 0;
-                    this->galhos--;
+        else {
+            bool frente = false;
+            int j = 0;
+            for(j = i; j < this->n; j++)
+                if (this->vetPtr[j] != 0){
+                    frente = true;
+                    break;
                 }
 
-
-                *(this->vetInfo[i]) = maior;
-            } else if(this->vetPtr[i+1] != 0){
-                int menor = this->vetPtr[i+1]->findMenor();
-                this->vetPtr[i+1]->deleteInfo(menor);
-                if(this->vetPtr[i+1]->qtdInf == 0){
-                    this->vetPtr[i+1] = 0;
-                    this->galhos--;
-                }
-
-                *(this->vetInfo[i]) = menor;
-            } else {
+            if (frente){
                 int j = 0;
-                for(j = this->qtdInf-1; j > i ; j--)
+                for(j = i; j < this->qtdInf; j++)
                     if(this->vetPtr[j+1] == 0 && this->vetPtr[j] == 0)
-                        this->vetInfo[j-1] = this->vetInfo[j];
+                        this->vetInfo[j] = new Tipo(*this->vetInfo[j+1]);
                     else
                         break;
 
-                if(!this->vetPtr[j]){
-                    int maior = this->vetPtr[j]->findMaior();
+                if(this->vetPtr[j]){
+                    Tipo* maior = this->vetPtr[j]->findMaior();
                     this->vetPtr[j]->deleteInfo(maior);
-                    *(this->vetInfo[j]) = maior;
+                    this->vetInfo[j] = new Tipo(*maior);
                     if(this->vetPtr[j]->qtdInf == 0){
+                        delete this->vetPtr[j];
                         this->vetPtr[j] = 0;
                         this->galhos--;
                     }
-                } else if(!this->vetPtr[j+1]){
-                    int menor = this->vetPtr[j+1]->findMenor();
+                } else if(this->vetPtr[j+1]){
+                    Tipo* menor = this->vetPtr[j+1]->findMenor();
                     this->vetPtr[j+1]->deleteInfo(menor);
+                    this->vetInfo[j] = new Tipo(*menor);
                     if(this->vetPtr[j+1]->qtdInf == 0){
+                        delete this->vetPtr[j+1];
                         this->vetPtr[j+1] = 0;
                         this->galhos--;
                     }
-                    *(this->vetInfo[j]) = menor;
+                }
+            }
+            else {
+                int j = 0;
+                for(j = i; j > 0; j--)
+                    if(this->vetPtr[j] == 0 && this->vetPtr[j+1] == 0)
+                        this->vetInfo[j] = new Tipo(*this->vetInfo[j-1]);
+                    else
+                        break;
 
+                if(this->vetPtr[j]){
+                    Tipo* maior = this->vetPtr[j]->findMaior();
+                    this->vetPtr[j]->deleteInfo(maior);
+                    this->vetInfo[j] = new Tipo(*maior);
+                    if(this->vetPtr[j]->qtdInf == 0){
+                        this->vetPtr[j] = 0;
+                        delete this->vetPtr[j];
+                        this->galhos--;
+                    }
+                } else if(this->vetPtr[j+1]){
+                    Tipo* menor = this->vetPtr[j]->findMenor();
+                    this->vetPtr[j+1]->deleteInfo(menor);
+                    this->vetInfo[j+1] = new Tipo(*menor);
+                    if(this->vetPtr[j+1]->qtdInf == 0){
+                        delete this->vetPtr[j+1];
+                        this->vetPtr[j+1] = 0;
+                        this->galhos--;
+                    }
                 }
             }
         }
@@ -142,7 +163,7 @@ namespace ArvoreNaria
             if(no.vetPtr[i])
                 os <<*(no.vetPtr[i]) << " ";
 
-            os << *(no.vetInfo[i]) << " ";
+            os << no.vetInfo[i]->getValor() << " ";
         }
         if(no.vetPtr[no.qtdInf])
             os << *(no.vetPtr[no.qtdInf]);

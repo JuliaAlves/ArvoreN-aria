@@ -9,11 +9,11 @@ namespace ArvoreNaria{
         this->raiz = new No(n);
     }
 
-    void Arvore::add(int n){
+    void Arvore::add(Tipo* n){
         this-> raiz->addInfo(n);
     }
 
-    void Arvore::del(int n){
+    void Arvore::del(Tipo* n){
         this-> raiz->deleteInfo(n);
     }
 

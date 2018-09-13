@@ -1,4 +1,5 @@
 #include <iostream>
+#include "Tipo.hpp"
 
 using namespace std;
 namespace ArvoreNaria
@@ -6,7 +7,7 @@ namespace ArvoreNaria
     class No
     {
         private:
-            int ** vetInfo;
+            Tipo ** vetInfo;
             No ** vetPtr;
             int n;
             int qtdInf;
@@ -15,10 +16,10 @@ namespace ArvoreNaria
         public:
             No(unsigned int);
             bool isFull() const;
-            void addInfo(int) throw(char*);
+            void addInfo(Tipo*) throw(char*);
             friend ostream& operator<<(ostream& os, const No& dt);
-            int findMaior() const;
-            int findMenor() const;
-            void deleteInfo(int) throw(char*);
+            Tipo* findMaior() const;
+            Tipo* findMenor() const;
+            void deleteInfo(Tipo*) throw(char*);
     };
 };

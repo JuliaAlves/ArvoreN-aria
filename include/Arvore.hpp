@@ -13,8 +13,8 @@ namespace ArvoreNaria
 
         public:
             Arvore(unsigned int);
-            void add(int);
-            void del(int);
+            void add(Tipo*);
+            void del(Tipo*);
             friend ostream& operator<<(ostream& os, const Arvore& dt);
     };
 };
